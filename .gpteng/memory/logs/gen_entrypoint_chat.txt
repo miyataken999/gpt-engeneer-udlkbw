@@ -1,0 +1,196 @@
+
+2024-06-13T05:35:34.111391
+================================ System Message ================================
+
+You will get information about a codebase that is currently on disk in the current folder.
+The user will ask you to write a script that runs the code in a specific way.
+You will answer with code blocks that include all the necessary terminal commands.
+Do not install globally. Do not use sudo.
+Do not explain the code, just give the commands.
+Do not use placeholders, use example values (like . for a folder argument) if necessary.
+
+
+================================ Human Message =================================
+
+
+        Make a unix script that
+        a) installs dependencies
+        b) runs all necessary parts of the codebase (in parallel if necessary)
+        
+Information about the codebase:
+
+```
+File: appsdcript0001.py
+1 # このスクリプトは、YouTubeの字幕を取得し、校正処理を行うプログラムです。
+2 
+3 import os
+4 import json
+5 import requests
+6 from bs4 import BeautifulSoup
+7 from dataclasses import dataclass
+8 
+9 @dataclass
+10 class YouTubeSubtitle:
+11     """YouTubeの字幕を表すクラス"""
+12     video_id: str
+13     language_code: str
+14     subtitles: list[str]
+15 
+16 def get_youtube_subtitles(video_id: str, language_code: str) -> YouTubeSubtitle:
+17     """YouTubeの字幕を取得する関数"""
+18     url = f"https://www.youtube.com/watch?v={video_id}"
+19     response = requests.get(url)
+20     soup = BeautifulSoup(response.content, 'html.parser')
+21     subtitles = []
+22     for caption in soup.find_all('track', {'kind': 'captions', 'srclang': language_code}):
+23         subtitles.append(caption.text.strip())
+24     return YouTubeSubtitle(video_id, language_code, subtitles)
+25 
+26 def correct_subtitles(subtitles: list[str]) -> list[str]:
+27     """字幕の校正処理を行う関数"""
+28     corrected_subtitles = []
+29     for subtitle in subtitles:
+30         # ここでは簡単な校正処理を行う
+31         corrected_subtitle = subtitle.replace("、", ",").replace("。", ".")
+32         corrected_subtitles.append(corrected_subtitle)
+33     return corrected_subtitles
+34 
+35 def main():
+36     video_id = "VIDEO_ID_HERE"  # YouTubeのビデオID
+37     language_code = "ja"  # 言語コード（日本語）
+38     subtitles = get_youtube_subtitles(video_id, language_code)
+39     corrected_subtitles = correct_subtitles(subtitles.subtitles)
+40     print("Corrected Subtitles:")
+41     for subtitle in corrected_subtitles:
+42         print(subtitle)
+43 
+44 if __name__ == "__main__":
+45     main()
+
+File: requirements.txt
+1 requests
+2 beautifulsoup4
+
+```
+
+================================== Ai Message ==================================
+
+Here is the Unix script that installs dependencies and runs the codebase:
+
+```
+#!/bin/bash
+
+# Install dependencies
+python -m pip install --user -r requirements.txt
+
+# Run the code
+python appsdcript0001.py
+```
+
+2024-06-13T05:36:47.518711
+================================ System Message ================================
+
+You will get information about a codebase that is currently on disk in the current folder.
+The user will ask you to write a script that runs the code in a specific way.
+You will answer with code blocks that include all the necessary terminal commands.
+Do not install globally. Do not use sudo.
+Do not explain the code, just give the commands.
+Do not use placeholders, use example values (like . for a folder argument) if necessary.
+
+
+================================ Human Message =================================
+
+
+        Make a unix script that
+        a) installs dependencies
+        b) runs all necessary parts of the codebase (in parallel if necessary)
+        
+Information about the codebase:
+
+```
+File: appsdcript0001.py
+1 # このスクリプトは、YouTubeの文字お越しをPythonで作成し、作成した文字を校正処理します。
+2 
+3 import youtube_dl
+4 import re
+5 from dataclasses import dataclass
+6 
+7 @dataclass
+8 class YouTubeVideo:
+9     """YouTube動画の情報を保持するクラス"""
+10     title: str
+11     description: str
+12 
+13 def download_youtube_video(video_url: str) -> YouTubeVideo:
+14     """YouTube動画をダウンロードし、動画の情報を返す"""
+15     ydl_opts = {'outtmpl': '%(id)s.%(ext)s'}
+16     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+17         info_dict = ydl.extract_info(video_url, download=True)
+18         title = info_dict.get('title', '')
+19         description = info_dict.get('description', '')
+20         return YouTubeVideo(title, description)
+21 
+22 def correct_text(text: str) -> str:
+23     """文字を校正処理"""
+24     # ここでは簡単な文字の校正処理を行う
+25     text = re.sub(r'[^\w\s]', '', text)  # 非アルファベット文字を削除
+26     return text
+27 
+28 def main():
+29     video_url = input("YouTube動画のURLを入力してください：")
+30     video = download_youtube_video(video_url)
+31     print("動画タイトル：", video.title)
+32     print("動画説明：", video.description)
+33     corrected_text = correct_text(video.description)
+34     print("校正された説明：", corrected_text)
+35 
+36 if __name__ == "__main__":
+37     main()
+
+File: requirements.txt
+1 youtube_dl
+
+File: (PlantUML)
+1 @startuml
+2 participant User as U
+3 participant Script as S
+4 participant YouTube as Y
+5 
+6 U ->> S: Input YouTube video URL
+7 S ->> Y: Download video
+8 Y ->> S: Return video information
+9 S ->> S: Correct text
+10 S ->> U: Print corrected text
+11 @enduml
+
+File: (Markdown)
+1 # YouTube動画文字お越しツール
+2 
+3 このツールは、YouTube動画の文字お越しをPythonで作成し、作成した文字を校正処理します。
+4 
+5 ## 使用方法
+6 
+7 1. このスクリプトを実行し、YouTube動画のURLを入力してください。
+8 2. スクリプトは、動画のタイトル、説明を出力します。
+9 3. スクリプトは、説明を校正処理し、校正された説明を出力します。
+10 
+11 ## 注意
+12 
+13 * このスクリプトは、簡単な文字の校正処理を行うため、複雑な文字の校正には対応していません。
+14 * このスクリプトは、YouTubeの利用規約に準拠して使用してください。
+
+```
+
+================================== Ai Message ==================================
+
+Here is the Unix script that installs dependencies and runs the codebase:
+
+```
+#!/bin/bash
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the script
+python appsdcript0001.py
+```

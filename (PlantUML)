@@ -1,0 +1,11 @@
+@startuml
+participant User as U
+participant Script as S
+participant YouTube as Y
+
+U ->> S: Input YouTube video URL
+S ->> Y: Download video
+Y ->> S: Return video information
+S ->> S: Correct text
+S ->> U: Print corrected text
+@enduml
